@@ -44,4 +44,5 @@ class UserConfirmation(models.Model):
     def is_expired(self):
         return self.expired_at < timezone.now()
 
-
+    def __str__(self):
+        return f"{self.user.username} | {self.code}"
