@@ -20,3 +20,32 @@ class CodeSerializer(serializers.Serializer):
         if not value.isdigit() or len(value) != 6:
             raise serializers.ValidationError("Kod 6ta raqamdan iborat bo'lishi kk")
         return value
+
+class SignUpSerializer(serializers.Serializer):
+    username = serializers.CharField(max_length=100, required=True)
+    phone = serializers.CharField(max_length=13, required=True)
+    first_name = serializers.CharField(max_length=100, required=True)
+    last_name = serializers.CharField(max_length=100)
+    password = serializers.CharField(max_length=20, required=True)
+    confirm_password = serializers.CharField(max_length=20, required=True)
+
+    def validate_username(self, value):
+        if User.objects.filter(username = value).exists():
+            raise serializers.ValidationError("Username already in used")
+
+        return value
+
+    def validate_phone(self, value):
+        if User.objects.filter(username=value).exists():
+            raise serializers.ValidationError("Phone number already in used")
+
+        return value
+
+    def validate(self, validated_data):
+        password = validated_data.get("password")
+        confirm_password = validated_data.get("confirm_password")
+
+        if password != confirm_password:
+            raise serializers.ValidationError("Password's didn't match.")
+
+        return validated_data
