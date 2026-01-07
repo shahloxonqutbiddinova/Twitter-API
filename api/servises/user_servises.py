@@ -8,7 +8,7 @@ def verify_user(user, code):
     if not confirmation:
         return False
 
-    if confirmation.is_axpired():
+    if confirmation.is_expired():
         return False
 
     if confirmation.code != code:
@@ -17,5 +17,5 @@ def verify_user(user, code):
     user.status = VERIFIED
     user.save()
 
-    user.confirmations.all().delete
+    user.confirmations.all().delete()
     return True
