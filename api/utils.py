@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 import random
 import string
+import re
 
 
 def send_code(email: str, code:str):
@@ -41,3 +42,6 @@ class CustomResponse:
         }
 
         return Response(data=response, status=status.HTTP_406_NOT_ACCEPTABLE)
+
+def is_email(email):
+    return re.fullmatch(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email)

@@ -1,10 +1,11 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from api.utils import send_code, CustomResponse
-from api.serializers import EmailSerializer, CodeSerializer, SignUpSerializer
+from api.serializers import EmailSerializer, CodeSerializer, SignUpSerializer, LoginSerializer
 from api.models import User, VERIFIED, NEW, DONE
 from api.servises.user_servises import verify_user
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from django.contrib.auth import authenticate
 
 
 
@@ -114,4 +115,25 @@ class SignUpAPIView(APIView):
 
         return CustomResponse.error(
             message="User hasn't verified."
+        )
+
+class LoginAPIView(APIView):
+    serializer_class = LoginSerializer
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        username = serializer.validated_data.get("username")
+        password = serializer.validated_data.get("password")
+
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            return CustomResponse.success(
+                message="User logged in successfully.",
+                data = user.token()
+            )
+
+        return CustomResponse.error(
+            message="User not found."
         )

@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from api.models import User
+from api.models import User, DONE
+from api.utils import is_email
 
 
 class EmailSerializer(serializers.Serializer):
@@ -47,5 +48,23 @@ class SignUpSerializer(serializers.Serializer):
 
         if password != confirm_password:
             raise serializers.ValidationError("Password's didn't match.")
+        return validated_data
+
+
+class LoginSerializer(serializers.Serializer):
+    user_input = serializers.CharField(max_length=100, required=True)
+    password = serializers.CharField(max_length=100, required=True)
+
+    def validate(self, validated_data):
+        user_input = validated_data.get("user_input")
+
+        if is_email(user_input):
+            user = User.objects.filter(email=user_input).filter(status=DONE).first()
+            if user is not None:
+                validated_data['username'] = user.username
+            else:
+                raise serializers.ValidationError("User not found")
+        else:
+            validated_data['username'] = user_input
 
         return validated_data
