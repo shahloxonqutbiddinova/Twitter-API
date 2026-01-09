@@ -3,6 +3,11 @@ from api.models import User, DONE
 from api.utils import is_email
 
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["username", 'email', 'first_name', 'last_name', 'phone']
+
 class EmailSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
 

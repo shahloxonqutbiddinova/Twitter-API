@@ -1,6 +1,12 @@
 from django.urls import path
-from api.views import SendCodeAPIView, CodeVerifyAPIView, ResendCodeView, SignUpAPIView, LoginAPIView
+from api.views import (SendCodeAPIView, CodeVerifyAPIView, ResendCodeView, SignUpAPIView, LoginAPIView,
+                        PostViewSet)
 
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+
+router.register(r"posts", PostViewSet)
 
 urlpatterns = [
     path("send+code/", SendCodeAPIView.as_view()),
@@ -9,3 +15,5 @@ urlpatterns = [
     path("sign_up/", SignUpAPIView.as_view()),
     path("login/", LoginAPIView.as_view()),
 ]
+
+urlpatterns += router.urls

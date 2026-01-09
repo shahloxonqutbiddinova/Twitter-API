@@ -6,9 +6,10 @@ from api.models import User, VERIFIED, NEW, DONE
 from api.servises.user_servises import verify_user
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.auth import authenticate
+from drf_spectacular.utils import extend_schema
 
 
-
+@extend_schema(tags=["Auth"])
 class SendCodeAPIView(APIView):
     serializer_class = EmailSerializer
 
@@ -26,7 +27,7 @@ class SendCodeAPIView(APIView):
             message="Verification code has sent",
             data=user.token()
         )
-
+@extend_schema(tags=["Auth"])
 class CodeVerifyAPIView(APIView):
     permission_classes = [IsAuthenticated, ]
     serializer_classes = CodeSerializer
@@ -55,7 +56,7 @@ class CodeVerifyAPIView(APIView):
             return True
         return False
 
-
+@extend_schema(tags=["Auth"])
 class ResendCodeView(APIView):
     permission_classes = [IsAuthenticated, ]
     def post(self, request):
@@ -78,6 +79,7 @@ class ResendCodeView(APIView):
             return True
         return False
 
+@extend_schema(tags=["Auth"])
 class SignUpAPIView(APIView):
     serializer_class = SignUpSerializer
     permission_classes = [IsAuthenticated, ]
@@ -117,6 +119,7 @@ class SignUpAPIView(APIView):
             message="User hasn't verified."
         )
 
+@extend_schema(tags=["Auth"])
 class LoginAPIView(APIView):
     serializer_class = LoginSerializer
 
